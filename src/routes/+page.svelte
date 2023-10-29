@@ -10,7 +10,7 @@
   } from 'nostr-tools';
 
   let noteId = '';
-  let hashtag = '#makeitquote';
+  let content = '#makeitquote';
   let status = '';
 
   const relays = ['wss://yabu.me', 'wss://nos.lol', 'wss://relay-jp.nostr.wirednet.jp'];
@@ -19,6 +19,11 @@
     status = '';
 
     const pool = new SimplePool();
+
+    const hashtags = [content.match(/^(#[\w]+)/), ...content.matchAll(/\s(#[\w]+)/g)]
+      .filter((a) => a)
+      .map(([, match]) => match);
+    console.debug('hashtags:', hashtags);
 
     const sk = generatePrivateKey();
     console.debug('sk:', sk);
@@ -33,9 +38,11 @@
       created_at: Math.floor(Date.now() / 1000),
       tags: [
         ['e', etag],
-        ['t', hashtag.substring(1)],
+        ...hashtags.map((hashtag) => {
+          return ['t', hashtag.substring(1)];
+        }),
       ],
-      content: `${hashtag}`,
+      content,
       pubkey: pk,
     };
     ev.id = getEventHash(ev);
@@ -77,11 +84,17 @@
     </label>
 
     <label class="label">
-      <span>Hashtag</span>
-      <input bind:value={hashtag} type="text" placeholder="#makeitquote" required class="input" />
+      <span>Reply</span>
+      <textarea
+        bind:value={content}
+        class="textarea"
+        required
+        rows="4"
+        placeholder="#makeitquote"
+      />
     </label>
 
-    <button type="submit" class="btn variant-filled mt-4">send</button>
+    <button type="submit" class="btn variant-filled mt-4">Send</button>
   </form>
 
   {status}
