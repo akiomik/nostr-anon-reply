@@ -69,7 +69,14 @@
 <section>
   <h1 class="h1">Nostr Anonymous Reply</h1>
 
-  <form on:submit={handleSumit}>
+  <aside class="alert variant-ghost-warning mt-4">
+    <div class="alert-message">
+      <h3 class="h3">Warning</h3>
+      <p>This tool replies with a random public key, but your IP may be logged in each relay.</p>
+    </div>
+  </aside>
+
+  <form on:submit={handleSumit} class="mt-4">
     <label class="label">
       <span>Note ID</span>
       <input
