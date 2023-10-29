@@ -60,20 +60,28 @@
 </svelte:head>
 
 <section>
-  <h1>Nostr Anonymous Reply</h1>
+  <h1 class="h1">Nostr Anonymous Reply</h1>
 
   <form on:submit={handleSumit}>
-    <label>
-      Note ID
-      <input bind:value={noteId} placeholder="note1..." minlength="63" maxlength="63" required />
+    <label class="label">
+      <span>Note ID</span>
+      <input
+        bind:value={noteId}
+        type="text"
+        placeholder="note1..."
+        minlength="63"
+        maxlength="63"
+        required
+        class="input"
+      />
     </label>
 
-    <label>
-      Hashtag
-      <input bind:value={hashtag} placeholder="#makeitquote" required />
+    <label class="label">
+      <span>Hashtag</span>
+      <input bind:value={hashtag} type="text" placeholder="#makeitquote" required class="input" />
     </label>
 
-    <button type="submit">send</button>
+    <button type="submit" class="btn variant-filled mt-4">send</button>
   </form>
 
   {status}
