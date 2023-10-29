@@ -72,7 +72,9 @@
   <aside class="alert variant-ghost-warning mt-4">
     <div class="alert-message">
       <h3 class="h3">Warning</h3>
-      <p>This tool replies with a random public key, but your IP may be logged in each relay.</p>
+      <p>
+        This tool send a reply with a random public key, but your IP may be logged in each relay.
+      </p>
     </div>
   </aside>
 
