@@ -3,7 +3,7 @@
 </script>
 
 <div class="app">
-  <main>
+  <main class="p-4">
     <slot />
   </main>
 </div>
