@@ -20,8 +20,8 @@
 
     const pool = new SimplePool();
 
-    const hashtags = [content.match(/^(#[\w]+)/), ...content.matchAll(/\s(#[\w]+)/g)]
-      .filter((a) => a)
+    const hashtags = ([content.match(/^(#[\w]+)/), ...content.matchAll(/\s(#[\w]+)/g)] as (RegExpMatchArray | null)[])
+      .filter((a): a is RegExpMatchArray => a !== null)
       .map(([, match]) => match);
     console.debug('hashtags:', hashtags);
 
@@ -33,7 +33,7 @@
 
     const { data: etag } = nip19.decode(noteId);
 
-    const ev = {
+    const ev: any = {
       kind: 1,
       created_at: Math.floor(Date.now() / 1000),
       tags: [
