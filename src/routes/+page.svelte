@@ -7,6 +7,8 @@
     generatePrivateKey,
     getPublicKey,
     SimplePool,
+    type UnsignedEvent,
+    type Event,
   } from 'nostr-tools';
 
   let noteId = '';
@@ -20,7 +22,12 @@
 
     const pool = new SimplePool();
 
-    const hashtags = ([content.match(/^(#[\w]+)/), ...content.matchAll(/\s(#[\w]+)/g)] as (RegExpMatchArray | null)[])
+    const hashtags = (
+      [
+        content.match(/^(#[\w]+)/),
+        ...content.matchAll(/\s(#[\w]+)/g),
+      ] as (RegExpMatchArray | null)[]
+    )
       .filter((a): a is RegExpMatchArray => a !== null)
       .map(([, match]) => match);
     console.debug('hashtags:', hashtags);
@@ -32,12 +39,15 @@
     console.debug('pk:', pk);
 
     const { data: etag } = nip19.decode(noteId);
+    // TODO: Improve type safety for nip19.decode result handling
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const eventId = typeof etag === 'string' ? etag : (etag as any).id;
 
-    const ev: any = {
+    const unsignedEvent: UnsignedEvent<1> = {
       kind: 1,
       created_at: Math.floor(Date.now() / 1000),
       tags: [
-        ['e', etag],
+        ['e', eventId],
         ...hashtags.map((hashtag) => {
           return ['t', hashtag.substring(1)];
         }),
@@ -45,8 +55,12 @@
       content,
       pubkey: pk,
     };
-    ev.id = getEventHash(ev);
-    ev.sig = getSignature(ev, sk);
+
+    const ev: Event<1> = {
+      ...unsignedEvent,
+      id: getEventHash(unsignedEvent),
+      sig: getSignature(unsignedEvent, sk),
+    };
     console.debug('ev:', ev, validateEvent(ev));
 
     Promise.all(pool.publish(relays, ev))
